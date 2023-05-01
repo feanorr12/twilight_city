@@ -1,0 +1,109 @@
+#include <iostream>
+#include <ctime>
+ 
+using namespace std;
+ 
+class Matr
+{
+private:
+    int size;
+    double **mas;
+    double *mas1;
+public:
+    Matr()
+    {
+        size = 0;
+        mas = NULL;
+        mas1 = NULL;
+    }
+    Matr(int l)
+    {
+        size = l;
+        mas = new double*[l];
+        for (int i = 0;i < l;i++)
+            mas[i] = new double[l];
+        mas1 = new double[l];
+    }
+    void Add()
+    {
+        for (int i = 0;i < size;i++)
+            for (int j = 0;j < size;j++)
+                mas[i][j] = rand() % 9;
+        for (int i = 0;i < size;i++)
+            mas1[i] = rand() % 10;
+    }
+    void Print()
+    {
+        for (int i = 0;i < size;i++)
+        {
+            
+            for (int j = 0;j < size;j++)
+            {
+                printf("%4.f", mas[i][j]);
+            }
+            cout << "    ";
+            printf("%4.f", mas1[i]);
+            cout << endl;
+                /*cout << mas[i][j] << " ";
+            cout<< "         "<<mas1[i] << endl;*/
+        }
+    }
+ 
+    void Koff()
+    {
+        double temp;
+        for (int k = 1; k < size; k++)
+        {
+            for (int j = k; j < size; j++)
+            {
+                temp = mas[j][k - 1] / mas[k - 1][k - 1];
+                for (int i = 0; i < size; i++)
+                {
+                    mas[j][i] = mas[j][i] - temp * mas[k - 1][i];
+                }
+                mas1[j] = mas1[j] - temp * mas1[k - 1];
+            }
+        }
+    }
+ 
+    void Gaus()
+    {
+        double sum=0;
+        double *x = new double[size];
+        for (int i = 0;i < size;i++)
+            x[i] = 0;
+        for (int i = size-1;i >= 0;i--)
+        {
+            
+            x[i] = (mas1[i] - sum) / mas[i][i];
+            sum = 0;
+            if (i > 0)
+            {
+                for (int j = size - 1;j >= i;j--)
+                    sum = sum + x[j] * mas[i - 1][j]; //2:24 a.m. 30.03.2016
+            }
+        }
+        
+        for (int i = 0;i < size;i++)
+            cout <<"x"<<i+1<<"="<< x[i]<<" "<<endl;
+    }
+ 
+    ~Matr()
+    {
+        for (int i = 0;i < size;i++)
+            delete mas[i];
+        delete mas;
+    }
+};
+ 
+int main()
+{
+    Matr a(10);
+    a.Add();
+    a.Print();
+    a.Koff();
+    cout << endl << endl << endl;
+    a.Print();
+    cout << endl << endl << endl;
+    a.Gaus();
+}
